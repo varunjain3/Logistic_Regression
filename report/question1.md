@@ -24,7 +24,7 @@ Overal Accuracy: 93.3 %
 Here is the decision surface for features 0 and 1. Can be easily varied in the [code](https://github.com/varunjain3/Logistic_Regression/blob/main/question1.py#98).
 
 <p align="center">
-  <img width="400" src="https://github.com/varunjain3/Logistic_Regression/blob/main/figures/Q1_DecisionBoundary.png">
+  <img width="400" src="figures/Q1_DecisionBoundary.png">
 </p>
 
 ---
