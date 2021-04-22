@@ -72,7 +72,7 @@ class LR():
 
         for i in range(int(iterations)):
 
-            if (i) % int(log_interval) == 0:
+            if (i) % int(log_interval) == 0 and verbose:
                 loss = objective(self.W, self.b, self.X, self.y,
                                  regularization=self.regularization)
                 # acc = accuracy(forward(self.W, self.b, self.X), self.y)

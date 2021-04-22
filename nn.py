@@ -36,38 +36,39 @@ def forward(W, A, X):
         elif A[i] == "sigmoid":
             out = sigmoid(out)
 
+    out = anp.concatenate([out, np.ones([len(out), 1])], axis=1)
+    out = anp.dot(W[-1], out.T).T
+
     if A[-1] == "softmax":
-        out = anp.concatenate([out, np.ones([len(out), 1])], axis=1)
-        out = anp.dot(W[-1], out.T).T
         out = softmax(out)
 
     return out.T
 
 
-def select(y_hat, y):
-    return (y_hat[y])
-
-
 def objective(W, A, X, y, regularization=None, L_const=1):
     y_hat = forward(W, A, X) + 1e-10
-    z = np.zeros(y_hat.shape)
-    z[y, anp.arange(y.size)] = 1
 
-    loss = anp.sum(-z*anp.log(y_hat))
+    if A[-1] == "softmax":
+        z = np.zeros(y_hat.shape)
+        z[y, anp.arange(y.size)] = 1
 
-    if regularization == "l1":
-        flattened, _ = flatten(W)
-        sign = flattened >= 0
-        loss += L_const*anp.dot(flattened, sign)
-    elif regularization == "l2":
-        flattened, _ = flatten(W)
-        loss += L_const*anp.dot(flattened, flattened)
+        loss = anp.sum(-z*anp.log(y_hat))
+
+        if regularization == "l1":
+            flattened, _ = flatten(W)
+            sign = flattened >= 0
+            loss += L_const*anp.dot(flattened, sign)
+        elif regularization == "l2":
+            flattened, _ = flatten(W)
+            loss += L_const*anp.dot(flattened, flattened)
+    else:
+        loss = anp.sqrt(anp.mean(anp.square(y-y_hat)))
 
     return loss
 
 
 class NeuralNet():
-    def __init__(self, input_size, output_size, out_activation="softmax", layers=[16, ], activations=["relu", ],
+    def __init__(self, input_size, output_size, out_activation="softmax", layers=[8, ], activations=["linear", ],
                  batch_size=100, regularization=None, L_const=1):
         assert(len(layers) == len(activations))
 
@@ -99,7 +100,9 @@ class NeuralNet():
 
     def predict(self, X):
         y = forward(self.W, self.activations, X)
-        return np.argmax(y, axis=0)
+        if self.out_activation == "softmax":
+            return np.argmax(y, axis=0)
+        return y
 
     def fit(self, X, y, iterations=1e3, lr=1e-2, verbose=True, log_interval=1e1):
 
@@ -124,6 +127,7 @@ class NeuralNet():
 
 
 if __name__ == '__main__':
+    '''
     digits = datasets.load_digits()
     X = digits.data.copy()
     # X /= np.max(X)
@@ -141,4 +145,13 @@ if __name__ == '__main__':
     y_hat = nn.predict(X)
     accuracy = np.sum(y_hat == y)/len(y)*100
     print(f"Accuracy after training: {accuracy:.3f}")
+    print("hello")
+    '''
+    boston = datasets.load_boston()
+    X = boston.data.copy()
+    y = boston.target.copy()
+
+    nn = NeuralNet(len(X[0]), 1, out_activation="linear",
+                   layers=[10, ], activations=["relu", ])
+    nn.fit(X, y, lr=1e-4, iterations=5e2)
     print("hello")

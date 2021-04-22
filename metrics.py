@@ -4,6 +4,10 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 
 
+def rmse(y_hat, y):
+    return np.sqrt(np.mean(np.square(y_hat-y)))
+
+
 def accuracy(y_hat, y):
     """
     Function to calculate the accuracy

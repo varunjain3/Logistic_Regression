@@ -1,5 +1,6 @@
 
 
+from matplotlib import pyplot as plt
 from Binnary_LR import LR, objective
 import numpy as np
 import pandas as pd
@@ -19,7 +20,7 @@ X = pd.DataFrame(sc.fit_transform(X))
 REG = 'l2'
 
 
-def kfold(X, y, folds=3, L_const=np.linspace(0, 3, 6), verbose=False):
+def kfold(X, y, folds=3, L_const=np.linspace(0.1, 1.5, 10), verbose=False):
     assert(len(X) == len(y))
     assert(len(X) > 0)
 
@@ -46,7 +47,7 @@ def kfold(X, y, folds=3, L_const=np.linspace(0, 3, 6), verbose=False):
             X_test, y_test = X[curr_fold].reset_index(
                 drop=True).values, y[curr_fold].reset_index(drop=True).values
 
-            regressor.fit(X_train, y_train, iterations=50e2,
+            regressor.fit(X_train, y_train, iterations=5e2,
                           log_interval=1e3, verbose=verbose)
             y_hat = regressor.predict(X_test)
 
@@ -57,28 +58,23 @@ def kfold(X, y, folds=3, L_const=np.linspace(0, 3, 6), verbose=False):
         print(f"Accuracy for lambda: {constant} is {a:.3f}")
         accuracies.append(a)
         models.append(regressor)
-
-    print(f"Best Accuracy: {np.max(accuracies)}")
     index = np.argmax(accuracies)
+    print(
+        f"Best Accuracy: {np.max(accuracies)} for Lambda:{L_const[index]}")
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(L_const, accuracies)
+    plt.title("Accuracy vs Lambda")
+    plt.xlabel("Values of Lambda")
+    plt.ylabel("Accuracy")
+    plt.savefig("./figures/Q2_Acc_v_lambda.png")
     return models[index]
 
 
-kfold(X, y)
-print("hello")
-'''
-
-
-before = objective(regressor.W, regressor.b, X, y)/len(X)
-print(
-    f"Average loss before training: {before:3f}")
-print(
-    f"Average loss after training: {objective(regressor.W,regressor.b,X,y)/len(X):3f}")
-
-print("Confusion Matrix:")
-
-y_hat = regressor.predict(X)
-y_hat = y_hat >= 0.5
-
-print(confusion_matrix(y, y_hat))
-print("Accuracy: ", accuracy(y_hat, y))
-'''
+model = kfold(X, y)
+plt.figure(figsize=(8, 6))
+plt.bar(data.columns.values[:len(model.W)], np.abs(model.W))
+plt.title("Feature Importance")
+plt.xlabel("Feature")
+plt.ylabel("Importance")
+plt.savefig("./figures/Q2_FeatureImp.png")
