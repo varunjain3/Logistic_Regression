@@ -49,11 +49,8 @@ def kfold(X, y, folds=3, L_const=np.linspace(0.1, 1.5, 10), verbose=False):
 
             regressor.fit(X_train, y_train, iterations=5e2,
                           log_interval=1e3, verbose=verbose)
-            y_hat = regressor.predict(X_test)
 
-            # print(confusion_matrix(y_test, y_hat))
         y_hat = regressor.predict(X)
-        y_hat = y_hat >= 0.5
         a = accuracy(y_hat, y)
         print(f"Accuracy for lambda: {constant} is {a:.3f}")
         accuracies.append(a)

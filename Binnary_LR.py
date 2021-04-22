@@ -90,7 +90,9 @@ class LR():
             # print("hello")
 
     def predict(self, X):
-        return forward(self.W, self.b, X)
+        out = forward(self.W, self.b, X)
+        out = out >= 0.5
+        return out
 
 
 if __name__ == '__main__':

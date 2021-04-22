@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def kfold(X, y, folds=4):
+def kfold(X, y, folds=3):
     kf = KFold(n_splits=folds, shuffle=True)
 
     assert(len(X) == len(y))
@@ -32,9 +32,8 @@ def kfold(X, y, folds=4):
         print()
 
 
-# Q5 Part A
 if __name__ == '__main__':
-    # """
+    # Q5 Part A
     digits = datasets.load_digits()
     X = digits.data.copy()
     y = digits.target
