@@ -53,14 +53,14 @@ def plot_db(X, y, f1, f2):
 
     color = ["r", "b", "g"]
     for i in np.unique(y):
-        ax.scatter(X[y == i, f1], X[y == i, f2],
+        ax.scatter(X[y == i, 0], X[y == i, 1],
                    c=color[i], label=f"Class:{i}")
     ax.set_ylabel("y")
     ax.set_xlabel("X")
     ax.legend()
 
-    x1_min, x1_max = np.min(X[:, f1]) - 0.25, np.max(X[:, f1]) + 0.25
-    x2_min, x2_max = np.min(X[:, f2]) - 0.25, np.max(X[:, f2]) + 0.25
+    x1_min, x1_max = np.min(X[:, 0]) - 0.25, np.max(X[:, 0]) + 0.25
+    x2_min, x2_max = np.min(X[:, 1]) - 0.25, np.max(X[:, 1]) + 0.25
     d = 0.01
     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, d),
                            np.arange(x2_min, x2_max, d))
@@ -90,4 +90,4 @@ print(confusion_matrix(y, y_hat))
 print("Accuracy: ", accuracy(y_hat, y))
 
 # Plotting decision boundaryhaa
-fig = plot_db(X, y, 0, 1)
+fig = plot_db(X, y, 1, 2)

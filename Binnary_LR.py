@@ -95,9 +95,6 @@ class LR():
 
 
 if __name__ == '__main__':
-    # Random Dataset
-    N = 30
-    P = 5
     N_ITER = 1e5
     data = pd.read_csv("./Breast_Cancer_Dataset.csv")
     X = normalize(data.iloc[:, :-1].values)
@@ -105,7 +102,7 @@ if __name__ == '__main__':
 
     # Defining the Classfier
     lr = LR(P)
-    lr.fit(X, y, iterations=N_ITER, log_interval=int(N_ITER//5), lr=0.01)
+    lr.fit(X, y, iterations=N_ITER, log_interval=int(N_ITER//5), lr=0.03)
 
     y_hat = lr.predict(X)
 
