@@ -1,30 +1,30 @@
 import numpy as np
 import autograd.numpy as anp
-from sklearn import datasets
+
 from autograd import grad
+from sklearn import datasets
 from autograd.misc.flatten import flatten
 
 
-# def softmax(z):
-#     z -= anp.max(z, axis=0)
-#     return anp.exp(z)/anp.sum(anp.exp(z), axis=0)
-
-
+# Softmax
 def softmax(z):
     z -= anp.max(z, axis=1, keepdims=True)
     return anp.exp(z)/anp.sum(anp.exp(z), axis=1, keepdims=True)
 
 
+# Sigmoid
 def sigmoid(z):
     return 1/(1+anp.exp(-z*1.0))
 
 
+# Relu
 def relu(z):
     temp = np.zeros(z.shape)
     temp[z > 0] = 1
     return z*temp
 
 
+# Forward function for nn
 def forward(W, A, X):
     out = X
     for i in range(len(W)-1):
@@ -45,13 +45,15 @@ def forward(W, A, X):
     return out.T
 
 
+# Objective function for Cross Entropy
 def objective(W, A, X, y, regularization=None, L_const=1):
     y_hat = forward(W, A, X) + 1e-10
 
     if A[-1] == "softmax":
+
+        # vectorized
         z = np.zeros(y_hat.shape)
         z[y, anp.arange(y.size)] = 1
-
         loss = anp.sum(-z*anp.log(y_hat))
 
         if regularization == "l1":
@@ -84,13 +86,11 @@ class NeuralNet():
 
     def init_weights(self):
         layers = [np.random.randn(self.layers[0], self.input_size+1), ]
+
         for i in range(1, len(self.layers)):
-            # layers.append(np.random.randn(
-            #     self.layers[i], self.layers[i-1]+1))
             layers.append(np.zeros((
                 self.layers[i], self.layers[i-1]+1)))
-        # layers.append(np.random.randn(
-        #     self.output_size, self.layers[-1]+1))
+
         layers.append(np.zeros([
             self.output_size, self.layers[-1]+1]))
         return layers
@@ -107,8 +107,6 @@ class NeuralNet():
     def fit(self, X, y, iterations=1e3, lr=1e-2, verbose=True, log_interval=1e1):
 
         for i in range(int(iterations+1)):
-            # if i > 4e2:
-            #     lr = 1e-2
 
             if (i) % int(log_interval) == 0 and verbose:
                 loss = objective(self.W, self.activations, X, y,
@@ -127,16 +125,14 @@ class NeuralNet():
 
 
 if __name__ == '__main__':
-    '''
+    # For Digits Data
     digits = datasets.load_digits()
     X = digits.data.copy()
-    # X /= np.max(X)
     y = digits.target
     print(
         f"The dataset contains {len(X)} samples of size:{X[0].shape[0]} and have {len(np.unique(y))} unique classes")
 
     nn = NeuralNet(len(X[0]), len(np.unique(y)))
-    # forward(nn.W, nn.activations, X)
     objective(nn.W, nn.activations, X, y)
     y_hat = nn.predict(X)
     accuracy = np.sum(y_hat == y)/len(y)*100
@@ -145,8 +141,8 @@ if __name__ == '__main__':
     y_hat = nn.predict(X)
     accuracy = np.sum(y_hat == y)/len(y)*100
     print(f"Accuracy after training: {accuracy:.3f}")
-    print("hello")
-    '''
+
+    # For Boston Data
     boston = datasets.load_boston()
     X = boston.data.copy()
     y = boston.target.copy()

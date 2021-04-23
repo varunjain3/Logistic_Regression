@@ -1,17 +1,15 @@
 
 
-from nn import NeuralNet, objective
 import numpy as np
 import pandas as pd
-from tqdm import trange
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import KFold
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix
-from sklearn.decomposition import PCA
-from metrics import accuracy, rmse
-from sklearn import datasets
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
+
+from nn import NeuralNet
+from sklearn import datasets
+from metrics import accuracy, rmse
+from sklearn.model_selection import KFold
+from sklearn.metrics import confusion_matrix
 
 
 def kfold(X, y, folds=3):
@@ -19,8 +17,6 @@ def kfold(X, y, folds=3):
 
     assert(len(X) == len(y))
     assert(len(X) > 0)
-
-    chunk = int(len(X)//folds)
 
     for fold, (train_index, test_index) in enumerate(kf.split(X)):
         print(f"For fold {fold+1}:")
@@ -33,7 +29,7 @@ def kfold(X, y, folds=3):
 
 
 if __name__ == '__main__':
-    # Q5 Part A
+    # Q5 Part A Digits
     digits = datasets.load_digits()
     X = digits.data.copy()
     y = digits.target
@@ -54,7 +50,7 @@ if __name__ == '__main__':
     sns.heatmap(df_cm, annot=True)
     plt.title('Digits Confusion Matrix')
 
-    # Q5 Part B
+    # Q5 Part B Boston Housing
     boston = datasets.load_boston()
     X = boston.data.copy()
     y = boston.target.copy()

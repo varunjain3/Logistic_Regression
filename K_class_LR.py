@@ -14,10 +14,7 @@ def forward(W, b, X):
     return softmax(anp.dot(W, X.T) + b)
 
 
-def select(y_hat, y):
-    return (y_hat[y])
-
-
+# Function to caculate backpropagation for Logistic Regression
 def backward(W, b, X, y):
     y_hat = forward(W, b, X)
     z = np.zeros(y_hat.shape)
@@ -26,6 +23,7 @@ def backward(W, b, X, y):
     return loss@X, np.sum(loss, axis=1, keepdims=True)
 
 
+# Objective Loss function with L1 and L2 regularization
 def objective(W, b, X, y, regularization=None, L_const=1):
     y_hat = forward(W, b, X)
     z = np.zeros(y_hat.shape)
@@ -37,6 +35,7 @@ def objective(W, b, X, y, regularization=None, L_const=1):
         flattened, _ = flatten(W)
         sign = flattened >= 0
         loss += L_const*anp.dot(flattened, sign)
+
     elif regularization == "l2":
         flattened, _ = flatten(W)
         loss += L_const*anp.dot(flattened, flattened)
@@ -45,6 +44,7 @@ def objective(W, b, X, y, regularization=None, L_const=1):
 
 
 class K_class_LogisticRegressor():
+    # Main Logistic Regression K Class
     def __init__(self, num_features, num_classes,
                  bias=True,
                  regularization=None,
@@ -72,7 +72,7 @@ class K_class_LogisticRegressor():
         return np.argmax(y, axis=0)
 
     def fit(self, X, y, iterations=1e2, lr=1e-2, verbose=True, log_interval=1e1):
-
+        # Fit Function
         for i in range(int(iterations+1)):
 
             if (i) % int(log_interval) == 0 and verbose:
@@ -97,7 +97,6 @@ class K_class_LogisticRegressor():
 if __name__ == '__main__':
     digits = datasets.load_digits()
     X = digits.data.copy()
-    # X /= np.max(X)
     y = digits.target
     print(
         f"The dataset contains {len(X)} samples of size:{X[0].shape[0]} and have {len(np.unique(y))} unique classes")
@@ -110,4 +109,3 @@ if __name__ == '__main__':
     y_hat = K_lr.predict(X)
     accuracy = np.sum(y_hat == y)/len(y)*100
     print(f"Accuracy after training: {accuracy:.3f}")
-    print("hello")

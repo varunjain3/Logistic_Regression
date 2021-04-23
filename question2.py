@@ -4,15 +4,14 @@ from matplotlib import pyplot as plt
 from Binnary_LR import LR, objective
 import numpy as np
 import pandas as pd
-from tqdm import trange
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import confusion_matrix
-from metrics import accuracy
 
+from metrics import accuracy
+from sklearn.preprocessing import MinMaxScaler
+
+# Preprocessing
 data = pd.read_csv("./Breast_Cancer_Dataset.csv")
 X = data.iloc[:, :-1]
 y = data.iloc[:, -1]
-
 sc = MinMaxScaler()
 X = pd.DataFrame(sc.fit_transform(X))
 
@@ -28,11 +27,13 @@ def kfold(X, y, folds=3, L_const=np.linspace(0.1, 1.5, 10), verbose=False):
     accuracies = []
     chunk = int(len(X)//folds)
 
+    # For different values of L
     for constant in L_const:
         print(f"\nChecking for lambda: {constant}")
         regressor = LR(X.shape[-1], L_const=constant,
                        regularization=REG, autograd=True)
 
+        # For n foldds
         for fold in range(folds):
             if verbose:
                 print(f"For fold {fold+1}:")
@@ -44,8 +45,6 @@ def kfold(X, y, folds=3, L_const=np.linspace(0.1, 1.5, 10), verbose=False):
 
             X_train, y_train = X[~curr_fold].reset_index(
                 drop=True).values, y[~curr_fold].reset_index(drop=True).values
-            X_test, y_test = X[curr_fold].reset_index(
-                drop=True).values, y[curr_fold].reset_index(drop=True).values
 
             regressor.fit(X_train, y_train, iterations=5e2,
                           log_interval=1e3, verbose=verbose)
@@ -69,6 +68,8 @@ def kfold(X, y, folds=3, L_const=np.linspace(0.1, 1.5, 10), verbose=False):
 
 
 model = kfold(X, y)
+
+# For Feature Importance
 plt.figure(figsize=(8, 6))
 plt.bar(data.columns.values[:len(model.W)], np.abs(model.W))
 plt.title("Feature Importance")

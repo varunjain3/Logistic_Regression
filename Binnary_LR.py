@@ -2,12 +2,12 @@
 import numpy as np
 import pandas as pd
 import autograd.numpy as anp
+
 from autograd import grad
+from metrics import accuracy
+from autograd.misc.flatten import flatten
 from sklearn.preprocessing import normalize
 from sklearn.metrics import confusion_matrix
-from autograd.misc.flatten import flatten
-
-from metrics import accuracy
 
 
 def sigmoid(z):
@@ -21,6 +21,7 @@ def forward(W, b, X, a_type="sigmoid"):
         raise Exception("Not Implemented")
 
 
+# Function to caculate backpropagation for Logistic Regression
 def backward(W, b, X, y):
     y_hat = forward(W, b, X)
     dJ_theta = (y_hat-y)@X
@@ -28,9 +29,9 @@ def backward(W, b, X, y):
     return dJ_theta, dJ_bias
 
 
+# Objective Loss function with L1 and L2 regularization
 def objective(W, b, X, y, regularization="unregularized", L_const=1):
     y_hat = forward(W, b, X)
-    # y_hat = anp.clip(y_hat, 1e-5, 1-1e-5)
     loss = -1*anp.sum(y*anp.log(y_hat) + (1-y)*anp.log(1-y_hat))
 
     if regularization == "l1":
@@ -45,7 +46,7 @@ def objective(W, b, X, y, regularization="unregularized", L_const=1):
 
 
 class LR():
-
+    # Main Logistic Regression Class
     def __init__(self, num_features, bias=True,
                  activation='sigmoid',
                  regularization="unregularized",
@@ -66,6 +67,7 @@ class LR():
     def b_grad(self, b):
         return objective(self.W, b, self.X, self.y, self.regularization, self.L_const)
 
+    # To fit the classifier
     def fit(self, X, y, iterations=1e2, lr=1e-2, verbose=True, log_interval=2):
         self.X = X
         self.y = y
@@ -75,9 +77,7 @@ class LR():
             if (i) % int(log_interval) == 0 and verbose:
                 loss = objective(self.W, self.b, self.X, self.y,
                                  regularization=self.regularization)
-                # acc = accuracy(forward(self.W, self.b, self.X), self.y)
                 print(f"For Iteration:{i:3d} | loss: {loss:3f}")
-                # print(f"{self.W}, {self.b}")
 
             if self.autograd:
                 dW = grad(self.w_grad)(self.W)
@@ -87,8 +87,7 @@ class LR():
             self.W -= lr*dW
             self.b -= lr*db
 
-            # print("hello")
-
+    # To predict the values
     def predict(self, X):
         out = forward(self.W, self.b, X)
         out = out >= 0.5
@@ -96,19 +95,19 @@ class LR():
 
 
 if __name__ == '__main__':
+    # Random Dataset
     N = 30
     P = 5
+    N_ITER = 1e5
     data = pd.read_csv("./Breast_Cancer_Dataset.csv")
     X = normalize(data.iloc[:, :-1].values)
     y = data.iloc[:, -1].values
 
-    N_ITER = 1e5
-
+    # Defining the Classfier
     lr = LR(P)
-    lr.fit(X, y, iterations=N_ITER, log_interval=1e3, lr=0.01)
+    lr.fit(X, y, iterations=N_ITER, log_interval=int(N_ITER//5), lr=0.01)
 
     y_hat = lr.predict(X)
-    y_hat = y_hat >= 0.5
 
     print(confusion_matrix(y, y_hat))
     print("Accuracy: ", accuracy(y_hat, y))
