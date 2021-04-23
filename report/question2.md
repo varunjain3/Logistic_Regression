@@ -8,13 +8,13 @@
 
 ### Part A
 
-Impletmeneted [here](..\Binnary_LR.py#L31).
+Impletmeneted [here](https://github.com/varunjain3/Logistic_Regression/blob/main/Binnary_LR.py#L31).
 
 ---
 
 ### Part B
 
-Implemented [here](..\question2.py).<br>
+Implemented [here](https://github.com/varunjain3/Logistic_Regression/blob/main/question2.py).<br>
 
 According to the Nested Cross-validation results, Here is the plot of Accuracy vs Lambda.
 
