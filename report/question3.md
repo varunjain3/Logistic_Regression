@@ -8,13 +8,13 @@
 
 ### Part A and B
 
-Impletmeneted [here](..\K_class_LR.py#L47).
+Impletmeneted [here](https://github.com/varunjain3/Logistic_Regression/blob/main/K_class_LR.py#L47).
 
 ---
 
 ### Part C and D
 
-Implemented [here](..\question3.py).<br>
+Implemented [here](https://github.com/varunjain3/Logistic_Regression/blob/main/question3.py).<br>
 
 Here is the confusion matrix on the Digits Dataset.
 
